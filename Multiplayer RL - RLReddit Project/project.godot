@@ -14,6 +14,10 @@ config/name="Multiplayer RL - RLReddit Project"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[display]
+
+window/subwindows/embed_subwindows=false
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

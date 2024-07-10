@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://dnagboyn114lh"]
+
+[ext_resource type="FontFile" uid="uid://dmjq8s3ddrpk7" path="res://Assets/Fonts/Pixelchunk/Pixelchunk.ttf" id="1_7oj5h"]
+
+[resource]
+default_font = ExtResource("1_7oj5h")

@@ -1,0 +1,44 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctv6r6dt3y8kp"]
+
+[ext_resource type="Theme" uid="uid://dnagboyn114lh" path="res://src/resources/pixelchunk.tres" id="1_8oujw"]
+
+[node name="Player" type="Window"]
+title = "P1"
+initial_position = 4
+size = Vector2i(350, 350)
+
+[node name="TabContainer" type="TabContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_8oujw")
+current_tab = 2
+
+[node name="⌂" type="TextEdit" parent="TabContainer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_8oujw")
+placeholder_text = "World! Hello!"
+
+[node name="Inv" type="PanelContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="InvRTLabel" type="TextEdit" parent="TabContainer/Inv"]
+layout_mode = 2
+text = "1 x Potion of Scrying"
+
+[node name="☻" type="PanelContainer" parent="TabContainer"]
+layout_mode = 2
+
+[node name="PlayerRTLabel" type="TextEdit" parent="TabContainer/☻"]
+layout_mode = 2
+text = "♥ : 100
+♦ : 100
+♣ : 100
+♠ : 100
+♫ : 100
+
+"
