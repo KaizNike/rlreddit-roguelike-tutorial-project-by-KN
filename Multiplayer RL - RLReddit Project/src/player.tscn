@@ -14,26 +14,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_8oujw")
-current_tab = 2
 
 [node name="⌂" type="TextEdit" parent="TabContainer"]
-visible = false
 layout_mode = 2
 theme = ExtResource("1_8oujw")
+text = "
+###
+@ ### B
+  D     k
+#####"
 placeholder_text = "World! Hello!"
 
-[node name="Inv" type="PanelContainer" parent="TabContainer"]
+[node name="Inv" type="TextEdit" parent="TabContainer"]
 visible = false
-layout_mode = 2
-
-[node name="InvRTLabel" type="TextEdit" parent="TabContainer/Inv"]
 layout_mode = 2
 text = "1 x Potion of Scrying"
 
-[node name="☻" type="PanelContainer" parent="TabContainer"]
-layout_mode = 2
-
-[node name="PlayerRTLabel" type="TextEdit" parent="TabContainer/☻"]
+[node name="☻" type="TextEdit" parent="TabContainer"]
+visible = false
 layout_mode = 2
 text = "♥ : 100
 ♦ : 100
