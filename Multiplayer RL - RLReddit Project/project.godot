@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Multiplayer RL - RLReddit Project"
+config/name="Multiplayer RL - RLReddit Project 2024"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
 
