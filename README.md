@@ -9,6 +9,7 @@ Currently implemented:
 1. Movement
 2. Stamina
 3. UI Basics
+   
 Working on:
 1. Multiplayer with multiple keyboard and controller players.
 2. Exiting the starter room
