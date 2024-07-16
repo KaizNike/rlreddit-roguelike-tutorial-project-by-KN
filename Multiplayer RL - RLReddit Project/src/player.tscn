@@ -28,7 +28,8 @@ theme = ExtResource("1_8oujw")
 text = "###
 ☻ ### B
   D     k
-#########"
+#########
+"
 placeholder_text = "World! Hello!"
 editable = false
 

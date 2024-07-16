@@ -2,10 +2,11 @@ extends Window
 
 ## Main Player Window - to be copied between players
 
-var Floor = []
+var visibleFloor = []
 var stam = 5
 var health = 100
 var status = "IN ROOM"
+var visible_size = Vector2i(21,15)
 
 @export var playerController = "k1"
 
@@ -24,7 +25,9 @@ const ALL = {"#": "WALL", " ": "FLOOR", ".": "FOOTSTEP",
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	Floor = _get_text_as_array(%"⌂TextEdit".text)
+	#visibleFloor = _get_text_as_array(%"⌂TextEdit".text)
+	visibleFloor = _get_visible_floor(TurnManager.generate_map())
+	%"⌂TextEdit".text = _return_array_to_text(visibleFloor)
 	pass # Replace with function body.
 
 
@@ -69,17 +72,39 @@ func _find_player(array) -> Vector2:
 	return Pos
 
 
+func _get_visible_floor(array) -> Array:
+	var a = []
+	var pos = Vector2i(_find_player(array))
+	var find = pos - Vector2i(int(visible_size.x/2-1),int(visible_size.y/2-1))
+	for y in range(visible_size.y):
+		var new_line = []
+		find.x = pos.x - int(visible_size.x/2-1)
+		for x in range(visible_size.x):
+			if find.y < 0 or find.x < 0 or find.y > TurnManager.map_size.y or find.x > TurnManager.map_size.x:
+				continue
+			new_line.append(array[find.y][find.x])
+			find.x += 1
+		a.append(new_line)
+		find.y += 1
+	return a
+
 func move_player(dir):
 	var status_changed = false
-	var pos = _find_player(Floor)
+	var pos = _find_player(visibleFloor)
+	var globalPos = Vector2i(_find_player(TurnManager.map))
 	if not pos:
 		print("player not found")
 		return false
 	var loc = pos + dir
-	if loc.x < 0 or loc.x > Floor[0].size() - 1 or loc.y < 0 or loc.y > Floor.size() - 1:
-		%"⌂Stat1".text = "FEEL: " + "VOID"
-		return false
-	var Dest = Floor[loc.y][loc.x]
+	if loc.x < 0 or loc.x > visibleFloor[0].size() - 1 or loc.y < 0 or loc.y > visibleFloor.size() - 1:
+		visibleFloor = _get_visible_floor(TurnManager.map)
+		%"⌂TextEdit".text = _return_array_to_text(visibleFloor)
+		if loc.x < 0 or loc.x > visibleFloor[0].size() - 1 or loc.y < 0 or loc.y > visibleFloor.size() - 1:
+			%"⌂Stat1".text = "FEEL: " + "VOID"
+			return false
+		else:
+			pass
+	var Dest = visibleFloor[loc.y][loc.x]
 	if Dest in INTERACTS or Dest in ENTITIES:
 		_handle_player_interaction(loc,Dest)
 		status_changed = true
@@ -87,15 +112,17 @@ func move_player(dir):
 		%"⌂Stat1".text = "FEEL: " + ALL[Dest]
 		return
 		pass
-	Floor[pos.y][pos.x] = "."
-	Floor[loc.y][loc.x] = "☻"
+	TurnManager.map[globalPos.y][globalPos.x] = "."
+	visibleFloor[pos.y][pos.x] = "."
+	TurnManager.map[globalPos.y+dir.y][globalPos.x+dir.x] = "☻"
+	visibleFloor[loc.y][loc.x] = "☻"
 	if not status_changed:
 		#print(dir)
 		var dirs = {"(0, 1)": "SOUTH", "(0, -1)": "NORTH", "(1, 0)": "WEST", "(-1, 0)": "EAST"}
 		if str(dir) in dirs.keys():
 			var text = "MOVE: " + dirs[str(dir)]
 			%"⌂Stat1".text = text
-	%"⌂TextEdit".text = _return_array_to_text(Floor)
+	%"⌂TextEdit".text = _return_array_to_text(visibleFloor)
 	
 
 func _handle_player_interaction(loc,obj):
