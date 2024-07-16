@@ -1,11 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://ctv6r6dt3y8kp"]
+[gd_scene load_steps=3 format=3 uid="uid://ctv6r6dt3y8kp"]
 
+[ext_resource type="Script" path="res://src/player.gd" id="1_6vgjo"]
 [ext_resource type="Theme" uid="uid://dnagboyn114lh" path="res://src/resources/pixelchunk.tres" id="1_8oujw"]
 
 [node name="Player" type="Window"]
 title = "P1"
 initial_position = 4
 size = Vector2i(350, 350)
+script = ExtResource("1_6vgjo")
 
 [node name="TabContainer" type="TabContainer" parent="."]
 anchors_preset = 15
@@ -15,22 +17,41 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_8oujw")
 
-[node name="⌂" type="TextEdit" parent="TabContainer"]
+[node name="⌂" type="VBoxContainer" parent="TabContainer"]
 layout_mode = 2
+
+[node name="⌂TextEdit" type="TextEdit" parent="TabContainer/⌂"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
 theme = ExtResource("1_8oujw")
-text = "
-###
-@ ### B
+text = "###
+☻ ### B
   D     k
-#####"
+#########"
 placeholder_text = "World! Hello!"
+editable = false
+
+[node name="⌂Stat1" type="Label" parent="TabContainer/⌂"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "STAT: IN ROOM"
+
+[node name="⌂Stat2" type="Label" parent="TabContainer/⌂"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "STAM: [#####] ♥ : 100"
 
 [node name="Inv" type="TextEdit" parent="TabContainer"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
-text = "1 x Potion of Scrying"
+text = "1 x Potion of Scrying
+15 x Lockpicks"
+editable = false
 
 [node name="☻" type="TextEdit" parent="TabContainer"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "♥ : 100
@@ -40,3 +61,4 @@ text = "♥ : 100
 ♫ : 100
 
 "
+editable = false
