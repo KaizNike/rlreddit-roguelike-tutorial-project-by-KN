@@ -1,3 +1,74 @@
-[gd_scene format=3 uid="uid://cy0rdfavu1jti"]
+[gd_scene load_steps=5 format=3 uid="uid://cy0rdfavu1jti"]
+
+[ext_resource type="Script" path="res://src/game.gd" id="1_5s5yy"]
+[ext_resource type="Theme" uid="uid://dnagboyn114lh" path="res://src/resources/pixelchunk.tres" id="1_jlhdp"]
+[ext_resource type="PackedScene" uid="uid://ctv6r6dt3y8kp" path="res://src/player.tscn" id="2_qmam2"]
+[ext_resource type="Script" path="res://src/LabelControllers.gd" id="3_l6i41"]
 
 [node name="Game" type="Node"]
+script = ExtResource("1_5s5yy")
+player = ExtResource("2_qmam2")
+
+[node name="GameUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_jlhdp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="GameUI/VBoxContainer"]
+layout_mode = 2
+text = "r/rldev 2024 Complete Roguelike Tutorial by KaizNike"
+horizontal_alignment = 1
+
+[node name="P1K1" type="Label" parent="GameUI/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "[_] PRESS E - WASD: MOVE, Z: SLEEP"
+autowrap_mode = 2
+
+[node name="P2K2" type="Label" parent="GameUI/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "[_] PRESS ENTER - ARROWS: MOVE, ALT: SLEEP"
+autowrap_mode = 2
+
+[node name="LabelControllers" type="Label" parent="GameUI/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("3_l6i41")
+
+[node name="P3C1" type="Label" parent="GameUI/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "[_] CONTROLLER 0 - PRESS RIGHT SHOULDER - DPAD:MOVE, LEFT SHOULDER: SLEEP"
+autowrap_mode = 2
+
+[node name="P4C2" type="Label" parent="GameUI/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "[_] CONTROLLER 1 - PRESS RIGHT SHOULDER - DPAD:MOVE"
+autowrap_mode = 2
+
+[node name="Spacer" type="Control" parent="GameUI/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Continue" type="Label" parent="GameUI/VBoxContainer"]
+layout_mode = 2
+text = "PRESS SPACEBAR OR START TO CONTINUE"
+horizontal_alignment = 1

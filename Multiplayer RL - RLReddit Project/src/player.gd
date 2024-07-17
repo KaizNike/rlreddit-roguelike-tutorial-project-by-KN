@@ -3,20 +3,24 @@ extends Window
 ## Main Player Window - to be copied between players
 
 var visibleFloor = []
+var visibleIndex = Vector2.ZERO
 var stam = 5
 var health = 100
 var status = "IN ROOM"
-var visible_size = Vector2i(21,15)
+var visible_size = Vector2(21,14)
 
-@export var playerController = "k1"
+# Change on creation
+var playerController = "k1"
+var Id = 0
+#@export var loc = Vector2.ZERO
 
-const COLLIDES = ["#", "D", "X", "*"]
+const COLLIDES = ["#", "D", "X", "*", "☻"]
 
 const ENTITIES = ["B","k"]
 
 const INTERACTS = ["D", "/"]
 
-const ALL = {"#": "WALL", " ": "FLOOR", ".": "FOOTSTEP",
+const ALL = {"#": "WALL", " ": "FLOOR", ".": "FOOTSTEP", "☻": "FREN",
 #INTERACTS
 "D": "DOOR", "/": "AJAR DOOR",
 #ENTITIES
@@ -26,19 +30,26 @@ const ALL = {"#": "WALL", " ": "FLOOR", ".": "FOOTSTEP",
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#visibleFloor = _get_text_as_array(%"⌂TextEdit".text)
-	visibleFloor = _get_visible_floor(TurnManager.generate_map())
+	visibleFloor = _get_visible_floor() #TurnManager.generate_map())
 	%"⌂TextEdit".text = _return_array_to_text(visibleFloor)
+	TurnManager.connect("synch_moves",Callable(self,"synch"))
+	TurnManager.connect("input_not_handled", Callable(self,"check_input"))
 	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
-
-
-func _input(event):
 	var dir = Input.get_vector(playerController+"_move_w",playerController+"_move_e",playerController+"_move_n",playerController+"_move_s")
-	var wait = event.is_action_pressed(playerController+"_sleep")
+	var wait = Input.is_action_pressed(playerController+"_sleep")
+	var tab_dir = int(Input.is_action_pressed(playerController+"_tab_right")) - int(Input.is_action_pressed(playerController+"_tab_left"))
+	print(tab_dir)
+	#if Input.is_action_pressed(playerController+"_tab_right"):
+		#print("This works!")
+		#print(int(Input.is_action_pressed(playerController+"_tab_right")))
+		#return
+	if tab_dir != 0:
+		$TabContainer.current_tab = clamp($TabContainer.current_tab+tab_dir,0,$TabContainer.get_tab_count())
+		return
 	if dir or wait:
 		if TurnManager.manage_turn():
 			print("Yay!")
@@ -55,58 +66,84 @@ func _input(event):
 				print("Resting")
 				%"⌂Stat1".text = "REST: " + "+1"
 				stam += 1
+				stam = clamp(stam,0,5)
 				write_stat2()
-			
-		pass
+			return
 	
 
-func _find_player(array) -> Vector2:
-	var Pos = Vector2.ZERO
-	for y in array:
-		for x in y:
-			if x == "☻":
-				return Pos
-			Pos.x += 1
-		Pos.x = 0
-		Pos.y += 1
-	return Pos
+func check_input():
+	pass
+
+#func _find_player(array) -> Vector2:
+	#var Pos = Vector2.ZERO
+	#for y in array:
+		#for x in y:
+			#if x == "☻":
+				#return Pos
+			#Pos.x += 1
+		#Pos.x = 0
+		#Pos.y += 1
+	##Pos = TurnManager.players[Id].loc
+	#return Pos
+
+func synch():
+	update_visible_floor()
 
 
-func _get_visible_floor(array) -> Array:
+func _get_visible_floor() -> Array:
 	var a = []
-	var pos = Vector2i(_find_player(array))
-	var find = pos - Vector2i(int(visible_size.x/2-1),int(visible_size.y/2-1))
+	var pos = TurnManager.players[Id].loc #Vector2(_find_player(array))
+	TurnManager.players[Id].localLoc = Vector2(int(visible_size.x/2-1),int(visible_size.y/2-1))
+	var find = pos - Vector2(int(visible_size.x/2-1),int(visible_size.y/2-1))
+	visibleIndex = find
 	for y in range(visible_size.y):
 		var new_line = []
 		find.x = pos.x - int(visible_size.x/2-1)
 		for x in range(visible_size.x):
 			if find.y < 0 or find.x < 0 or find.y > TurnManager.map_size.y or find.x > TurnManager.map_size.x:
 				continue
-			new_line.append(array[find.y][find.x])
+			new_line.append(TurnManager.map[find.y][find.x])
 			find.x += 1
 		a.append(new_line)
 		find.y += 1
 	return a
 
+
+func update_visible_floor():
+	var a = []
+	var find = visibleIndex
+	for y in range(visible_size.y):
+		var new_line = []
+		find.x = visibleIndex.x
+		for x in range(visible_size.x):
+			if find.y < 0 or find.x < 0 or find.y > TurnManager.map_size.y or find.x > TurnManager.map_size.x:
+				continue
+			new_line.append(TurnManager.map[find.y][find.x])
+			find.x += 1
+		a.append(new_line)
+		find.y += 1
+	visibleFloor = a.duplicate(true)
+	%"⌂TextEdit".text = _return_array_to_text(visibleFloor)
+
 func move_player(dir):
 	var status_changed = false
-	var pos = _find_player(visibleFloor)
-	var globalPos = Vector2i(_find_player(TurnManager.map))
+	var pos = TurnManager.players[Id].localLoc#_find_player(visibleFloor)
+	var globalPos = TurnManager.players[Id].loc#Vector2(_find_player(TurnManager.map))
 	if not pos:
 		print("player not found")
 		return false
-	var loc = pos + dir
-	if loc.x < 0 or loc.x > visibleFloor[0].size() - 1 or loc.y < 0 or loc.y > visibleFloor.size() - 1:
-		visibleFloor = _get_visible_floor(TurnManager.map)
+	var localLoc = pos + dir
+	if localLoc.x < 0 or localLoc.x > visibleFloor[0].size() - 1 or localLoc.y < 0 or localLoc.y > visibleFloor.size() - 1:
+		visibleFloor = _get_visible_floor()
 		%"⌂TextEdit".text = _return_array_to_text(visibleFloor)
-		if loc.x < 0 or loc.x > visibleFloor[0].size() - 1 or loc.y < 0 or loc.y > visibleFloor.size() - 1:
+		if localLoc.x < 0 or localLoc.x > visibleFloor[0].size() - 1 or localLoc.y < 0 or localLoc.y > visibleFloor.size() - 1:
 			%"⌂Stat1".text = "FEEL: " + "VOID"
 			return false
 		else:
 			pass
-	var Dest = visibleFloor[loc.y][loc.x]
+	var Dest = visibleFloor[localLoc.y][localLoc.x]
 	if Dest in INTERACTS or Dest in ENTITIES:
-		_handle_player_interaction(loc,Dest)
+		_handle_player_interaction(localLoc,Dest)
 		status_changed = true
 	if Dest in COLLIDES or Dest in ENTITIES:
 		%"⌂Stat1".text = "FEEL: " + ALL[Dest]
@@ -115,7 +152,11 @@ func move_player(dir):
 	TurnManager.map[globalPos.y][globalPos.x] = "."
 	visibleFloor[pos.y][pos.x] = "."
 	TurnManager.map[globalPos.y+dir.y][globalPos.x+dir.x] = "☻"
-	visibleFloor[loc.y][loc.x] = "☻"
+	visibleFloor[localLoc.y][localLoc.x] = "☻"
+	TurnManager.players[Id].localLoc = localLoc
+	TurnManager.players[Id].loc = Vector2(globalPos.x+dir.x,globalPos.y+dir.y)
+	if TurnManager.multiplePlayers:
+		TurnManager.emit_signal("synch_moves")
 	if not status_changed:
 		#print(dir)
 		var dirs = {"(0, 1)": "SOUTH", "(0, -1)": "NORTH", "(1, 0)": "WEST", "(-1, 0)": "EAST"}

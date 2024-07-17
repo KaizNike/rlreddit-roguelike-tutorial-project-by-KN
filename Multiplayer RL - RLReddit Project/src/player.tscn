@@ -4,6 +4,7 @@
 [ext_resource type="Theme" uid="uid://dnagboyn114lh" path="res://src/resources/pixelchunk.tres" id="1_8oujw"]
 
 [node name="Player" type="Window"]
+handle_input_locally = false
 title = "P1"
 initial_position = 4
 size = Vector2i(350, 350)
@@ -36,7 +37,7 @@ editable = false
 [node name="⌂Stat1" type="Label" parent="TabContainer/⌂"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "STAT: IN ROOM"
+text = "STAT: IN CAVE"
 
 [node name="⌂Stat2" type="Label" parent="TabContainer/⌂"]
 unique_name_in_owner = true
