@@ -2,6 +2,7 @@ extends Node
 
 var players = 0
 var ready_to_play = false
+var started = false
 
 @export var player = PackedScene.new()
 # Called when the node enters the scene tree for the first time.
@@ -30,8 +31,10 @@ func _input(event):
 	if players > 0:
 		$GameUI/VBoxContainer/Continue.visible = true
 		ready_to_play = true
-	if ready_to_play and event.is_action_pressed("start"):
+	if ready_to_play and not started and event.is_action_pressed("start"):
 		start()
+		started = true
+		$GameUI/VBoxContainer/Continue.text = "FEEL FREE TO MOVE THE SCREENS!"
 
 
 func start():
