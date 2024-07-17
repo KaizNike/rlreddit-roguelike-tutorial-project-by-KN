@@ -14,3 +14,7 @@ Working on:
 1. Multiplayer with multiple keyboard and controller players.
 2. Exiting the starter room
 3. Dungeon Generation
+
+## Week 2
+![Three screens of people in caves.](rlreddit2024-3.png)
+Week 2 Summary: Alright I'm caught up for this week~ The initial part of getting multiplayer running was hair raising in how few times I could test while coding, but after a few Vector2i schenanigans, it works! (All Vector2i were killed for this release.) Supports 2 keyboard players and a controller for now, my other cable is unstable so I either need another or just hold it better or get a bluetooth dongle, we'll see!
