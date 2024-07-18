@@ -1,6 +1,7 @@
 extends Node
 
 var players = 0
+var controllers = []
 var ready_to_play = false
 var started = false
 
@@ -12,20 +13,29 @@ func _ready():
 
 
 func _input(event):
-	if event.is_action_pressed("k1_interact"):
+	if event.is_action_pressed("k1_interact") and "k1" not in controllers:
+		controllers.append("k1")
 		TurnManager.new_player("k1")
 		players += 1
 		%P1K1.text = "["+str(players)+"] PRESS E - WASD: MOVE, Z: SLEEP"
 		pass
-	if event.is_action_pressed("k2_interact"):
+	if event.is_action_pressed("k2_interact") and "k2" not in controllers:
+		controllers.append("k2")
 		TurnManager.new_player("k2")
 		players += 1
 		%P2K2.text = "["+str(players)+"] PRESS ENTER - ARROWS: MOVE, ALT: SLEEP"
 		pass
-	if event.is_action_pressed("c1_interact"):
+	if event.is_action_pressed("c1_interact") and "c1" not in controllers:
+		controllers.append("c1")
 		TurnManager.new_player("c1")
 		players += 1
 		%P3C1.text = "["+str(players)+"] CONTROLLER 0 - PRESS RIGHT SHOULDER - DPAD:MOVE, LEFT SHOULDER: SLEEP"
+		pass
+	if event.is_action_pressed("c2_interact") and "c2" not in controllers:
+		controllers.append("c2")
+		TurnManager.new_player("c2")
+		players += 1
+		%P4C2.text = "["+str(players)+"] CONTROLLER 1 - PRESS RIGHT SHOULDER - DPAD:MOVE, LEFT SHOULDER: SLEEP"
 		pass
 	# ADD C2 - Controller 1
 	if players > 0:

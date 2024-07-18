@@ -58,7 +58,6 @@ autowrap_mode = 2
 
 [node name="P4C2" type="Label" parent="GameUI/VBoxContainer"]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "[_] CONTROLLER 1 - PRESS RIGHT SHOULDER - DPAD:MOVE"
