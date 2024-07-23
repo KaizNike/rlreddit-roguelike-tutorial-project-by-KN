@@ -13,7 +13,7 @@ config_version=5
 config/name="Multiplayer RL - RLReddit Project 2024"
 run/main_scene="res://src/game.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
-run/max_fps=7
+run/max_fps=120
 config/icon="res://icon.svg"
 
 [autoload]

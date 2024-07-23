@@ -68,7 +68,8 @@ func generate_map():
 		a[start.y][start.x] = " "
 		var dir = Vector2.ZERO
 		if step % portion == 0:
-			seeds.append(start)
+			if start not in seeds:
+				seeds.append(start)
 		dir.x = (randi() % 3) - 1
 		if dir.x == 0:
 			dir.y = (randi() % 3) - 1

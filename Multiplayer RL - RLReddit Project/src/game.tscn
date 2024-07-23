@@ -18,56 +18,76 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_jlhdp")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GameUI"]
+[node name="ScrollContainer" type="ScrollContainer" parent="GameUI"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+vertical_scroll_mode = 2
 
-[node name="Label" type="Label" parent="GameUI/VBoxContainer"]
+[node name="VSplitContainer" type="VSplitContainer" parent="GameUI/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameUI/ScrollContainer/VSplitContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="GameUI/ScrollContainer/VSplitContainer/VBoxContainer"]
 layout_mode = 2
 text = "r/rldev 2024 Complete Roguelike Tutorial by KaizNike"
 horizontal_alignment = 1
 
-[node name="P1K1" type="Label" parent="GameUI/VBoxContainer"]
+[node name="InputsHelp" type="Label" parent="GameUI/ScrollContainer/VSplitContainer/VBoxContainer"]
+layout_mode = 2
+text = "Inputs Use QWERTY Physical Locations"
+horizontal_alignment = 1
+
+[node name="P1K1" type="Label" parent="GameUI/ScrollContainer/VSplitContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "[_] PRESS E - WASD: MOVE, Z: SLEEP"
 autowrap_mode = 2
 
-[node name="P2K2" type="Label" parent="GameUI/VBoxContainer"]
+[node name="P2K2" type="Label" parent="GameUI/ScrollContainer/VSplitContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "[_] PRESS ENTER - ARROWS: MOVE, ALT: SLEEP"
 autowrap_mode = 2
 
-[node name="LabelControllers" type="Label" parent="GameUI/VBoxContainer"]
+[node name="InputsHelp2" type="Label" parent="GameUI/ScrollContainer/VSplitContainer/VBoxContainer"]
+layout_mode = 2
+text = "Inputs Use Controller Physical Locations"
+horizontal_alignment = 1
+
+[node name="LabelControllers" type="Label" parent="GameUI/ScrollContainer/VSplitContainer/VBoxContainer"]
 layout_mode = 2
 script = ExtResource("3_l6i41")
 
-[node name="P3C1" type="Label" parent="GameUI/VBoxContainer"]
+[node name="P3C1" type="Label" parent="GameUI/ScrollContainer/VSplitContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "[_] CONTROLLER 0 - PRESS RIGHT SHOULDER - DPAD:MOVE, LEFT SHOULDER: SLEEP"
 autowrap_mode = 2
 
-[node name="P4C2" type="Label" parent="GameUI/VBoxContainer"]
+[node name="P4C2" type="Label" parent="GameUI/ScrollContainer/VSplitContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "[_] CONTROLLER 1 - PRESS RIGHT SHOULDER - DPAD:MOVE"
 autowrap_mode = 2
 
-[node name="Spacer" type="Control" parent="GameUI/VBoxContainer"]
+[node name="Spacer" type="Control" parent="GameUI/ScrollContainer/VSplitContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Continue" type="Label" parent="GameUI/VBoxContainer"]
+[node name="Continue" type="Label" parent="GameUI/ScrollContainer/VSplitContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "PRESS SPACEBAR OR START TO CONTINUE"
 horizontal_alignment = 1

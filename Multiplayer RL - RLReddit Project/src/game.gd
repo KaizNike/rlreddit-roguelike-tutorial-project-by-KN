@@ -1,5 +1,9 @@
 extends Node
 
+# BUGS TO FIX:
+## 1. input not clear on different keyboards
+## 2. Input on players mapped to framerate which is maxxed at 6, which is weird
+
 var players = 0
 var controllers = []
 var ready_to_play = false
@@ -8,7 +12,12 @@ var started = false
 @export var player = PackedScene.new()
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	$GameUI/VBoxContainer/Continue.visible = false
+	%Continue.visible = false
+	#var inputs = ['k1','k2','c1','c2']
+	var inputs = ["k1"]
+	for input in inputs:
+		set_up_player_labels(input)
+	#$GameUI/VBoxContainer/Continue
 	pass # Replace with function body.
 
 
@@ -39,13 +48,31 @@ func _input(event):
 		pass
 	# ADD C2 - Controller 1
 	if players > 0:
-		$GameUI/VBoxContainer/Continue.visible = true
+		%Continue.visible = true
 		ready_to_play = true
 	if ready_to_play and not started and event.is_action_pressed("start"):
-		start()
 		started = true
-		$GameUI/VBoxContainer/Continue.text = "FEEL FREE TO MOVE THE SCREENS!"
+		start()
+		%Continue.text = "FEEL FREE TO MOVE THE SCREENS!"
 
+
+func set_up_player_labels(player:String):
+	var text = "[_] PRESS "
+	if player.contains("c"):
+		print("Controller")
+		text = "[_] CONTROLLER " + str(int(player[1])+1) + " - PRESS RIGHT SHOULDER - DPAD:MOVE, LEFT SHOULDER: SLEEP"
+		match player:
+			"c1":
+				%P3C1.text = text
+			"c2":
+				%P4C2.text = text
+		return
+	var inputs = [player+"_interact",player+"_move_n",player+"_move_w",player+"_move_e",player+"_sleep"]
+	for input in inputs:
+		var check = InputMap.action_get_events(input)
+		check = check[0].as_text()
+		print(check)
+	
 
 func start():
 	TurnManager.generate_map()

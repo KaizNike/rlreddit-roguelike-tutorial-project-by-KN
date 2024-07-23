@@ -37,8 +37,7 @@ func _ready():
 	pass # Replace with function body.
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _input(event):
 	var dir = Input.get_vector(playerController+"_move_w",playerController+"_move_e",playerController+"_move_n",playerController+"_move_s")
 	var wait = Input.is_action_pressed(playerController+"_sleep")
 	var tab_dir = int(Input.is_action_pressed(playerController+"_tab_right")) - int(Input.is_action_pressed(playerController+"_tab_left"))
@@ -68,7 +67,14 @@ func _process(delta):
 				stam += 1
 				stam = clamp(stam,0,5)
 				write_stat2()
-			return
+			
+
+func input_deferred(event):
+	pass
+	
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	pass
 	
 
 func check_input():
