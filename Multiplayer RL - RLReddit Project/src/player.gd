@@ -3,28 +3,34 @@ extends Window
 ## Main Player Window - to be copied between players
 
 var visibleFloor = []
+var rememberedMap = []
 var visibleIndex = Vector2.ZERO
 var stam = 5
 var health = 100
 var status = "IN ROOM"
 var visible_size = Vector2(21,14)
+var light_radius = 4
 
 # Change on creation
 var playerController = "k1"
 var Id = 0
 #@export var loc = Vector2.ZERO
 
-const COLLIDES = ["#", "D", "X", "*", "☻"]
+const COLLIDES = ["#", "D", "X", "*"]
 
-const ENTITIES = ["B","k"]
+const ENTITIES = ["B","k", "☻"]
 
 const INTERACTS = ["D", "/"]
+
+const MYSTERY = ["?"]
 
 const ALL = {"#": "WALL", " ": "FLOOR", ".": "FOOTSTEP", "☻": "FREN",
 #INTERACTS
 "D": "DOOR", "/": "AJAR DOOR",
 #ENTITIES
-"k": "KOBOLD", "B": "BEAR"
+"k": "KOBOLD", "B": "BEAR",
+#MYsTERy
+"?": "UNKNOWN"
 }
 
 # Called when the node enters the scene tree for the first time.
@@ -108,7 +114,11 @@ func _get_visible_floor() -> Array:
 		for x in range(visible_size.x):
 			if find.y < 0 or find.x < 0 or find.y > TurnManager.map_size.y or find.x > TurnManager.map_size.x:
 				continue
-			new_line.append(TurnManager.map[find.y][find.x])
+			var item = TurnManager.map[find.y][find.x]
+			if pos.distance_to(find) <= light_radius and is_cell_visible(find):
+				new_line.append(item)
+			else:
+				new_line.append("?")
 			find.x += 1
 		a.append(new_line)
 		find.y += 1
@@ -116,6 +126,7 @@ func _get_visible_floor() -> Array:
 
 
 func update_visible_floor():
+	var pos = Vector2(TurnManager.players[Id].loc)
 	var a = []
 	var find = visibleIndex
 	for y in range(visible_size.y):
@@ -124,12 +135,47 @@ func update_visible_floor():
 		for x in range(visible_size.x):
 			if find.y < 0 or find.x < 0 or find.y > TurnManager.map_size.y or find.x > TurnManager.map_size.x:
 				continue
-			new_line.append(TurnManager.map[find.y][find.x])
+			var item = TurnManager.map[find.y][find.x]
+			if pos.distance_to(find) <= light_radius and is_cell_visible(find):
+				new_line.append(item)
+			else:
+				new_line.append("?")
 			find.x += 1
 		a.append(new_line)
 		find.y += 1
 	visibleFloor = a.duplicate(true)
 	%"⌂TextEdit".text = _return_array_to_text(visibleFloor)
+
+func is_cell_visible(cell_pos):
+	var steps = 0
+	# Bresenham by Copilot
+	var player_position = TurnManager.players[Id].loc
+	var x0 = int(player_position.x)
+	var y0 = int(player_position.y)
+	var x1 = int(cell_pos.x)
+	var y1 = int(cell_pos.y)
+	
+	var dx = abs(x1 - x0)
+	var dy = abs(y1 - y0)
+	var sx =  1 if x0 < x1 else -1
+	var sy =  1 if y0 < y1 else -1
+	var err = dx - dy
+	
+	while true:
+		if TurnManager.map[y0][x0] in COLLIDES: # Check if the cell is an obstacle
+			if steps > 0:
+				return false
+			steps += 1
+		if x0 == x1 and y0 == y1:
+			return true
+		var e2 = 2 * err
+		if e2 > -dy:
+			err -= dy
+			x0 += sx
+		if e2 < dx:
+			err += dx
+			y0 += sy
+
 
 func move_player(dir):
 	var status_changed = false
@@ -139,6 +185,7 @@ func move_player(dir):
 		print("player not found")
 		return false
 	var localLoc = pos + dir
+	var globalLoc = globalPos + dir
 	if localLoc.x < 0 or localLoc.x > visibleFloor[0].size() - 1 or localLoc.y < 0 or localLoc.y > visibleFloor.size() - 1:
 		visibleFloor = _get_visible_floor()
 		%"⌂TextEdit".text = _return_array_to_text(visibleFloor)
@@ -148,6 +195,12 @@ func move_player(dir):
 		else:
 			pass
 	var Dest = visibleFloor[localLoc.y][localLoc.x]
+	var globalDest = TurnManager.map[globalLoc.y][globalLoc.x]
+	if Dest in MYSTERY:
+		%"⌂Stat1".text = "FIND: " + ALL[globalDest]
+		Dest = globalDest
+		%"⌂TextEdit".text = _return_array_to_text(visibleFloor)
+		return
 	if Dest in INTERACTS or Dest in ENTITIES:
 		_handle_player_interaction(localLoc,Dest)
 		status_changed = true
@@ -161,6 +214,7 @@ func move_player(dir):
 	visibleFloor[localLoc.y][localLoc.x] = "☻"
 	TurnManager.players[Id].localLoc = localLoc
 	TurnManager.players[Id].loc = Vector2(globalPos.x+dir.x,globalPos.y+dir.y)
+	
 	if TurnManager.multiplePlayers:
 		TurnManager.emit_signal("synch_moves")
 	if not status_changed:
@@ -169,7 +223,8 @@ func move_player(dir):
 		if str(dir) in dirs.keys():
 			var text = "MOVE: " + dirs[str(dir)]
 			%"⌂Stat1".text = text
-	%"⌂TextEdit".text = _return_array_to_text(visibleFloor)
+	update_visible_floor()
+	#%"⌂TextEdit".text = _return_array_to_text(visibleFloor)
 	
 
 func _handle_player_interaction(loc,obj):
