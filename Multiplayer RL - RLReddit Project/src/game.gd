@@ -76,6 +76,8 @@ func set_up_player_labels(player:String):
 
 func start():
 	TurnManager.generate_map()
+	print("SEEDS #: " + str(TurnManager.seeds.size()) + " WORLDSEEDS #: " + str(TurnManager.worldSeeds.size()))
+	TurnManager.generate_monsters()
 	if TurnManager.players.size() > 1:
 		TurnManager.multiplePlayers = true
 	for Player in TurnManager.players:

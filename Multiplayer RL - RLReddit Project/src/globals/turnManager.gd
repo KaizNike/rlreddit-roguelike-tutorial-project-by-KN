@@ -5,6 +5,7 @@ var players = {}
 var player = {"id":0, "playerController": "k1", "loc": Vector2.ZERO, "localLoc":Vector2.ZERO}
 var actors = []
 var seeds = []
+var worldSeeds = []
 var map = []
 var map_size = Vector2(300,300)
 @onready var drunk_steps = int((map_size.y*map_size.x)/8)
@@ -12,6 +13,8 @@ var map_size = Vector2(300,300)
 
 signal synch_moves
 signal input_not_handled
+
+const ENTITIES = ["B","k", "☻"]
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
@@ -46,11 +49,13 @@ func generate_map():
 	var minor_caves = randi() % 8
 	print("Minors: ", minor_caves)
 	var portion = 0.05
+	var smallPortions = 0.00025
 	var steps = 0
 	for y in range(map_size.y):
 		for x in range(map_size.x):
 			steps += 1
 	portion = int(steps * portion)
+	smallPortions = int(steps * smallPortions)
 	steps = 0
 	for y in range(map_size.y):
 		var new_line = []
@@ -67,6 +72,9 @@ func generate_map():
 	for step in range(drunk_steps):
 		a[start.y][start.x] = " "
 		var dir = Vector2.ZERO
+		if step % smallPortions == 0:
+			if start not in seeds and start not in worldSeeds:
+				worldSeeds.append(start)
 		if step % portion == 0:
 			if start not in seeds:
 				seeds.append(start)
@@ -85,3 +93,16 @@ func generate_map():
 	seeds.shuffle()
 	map = a.duplicate(true)
 	#return a
+
+
+func generate_monsters():
+	while worldSeeds:
+		worldSeeds.shuffle()
+		var start = worldSeeds.pop_front()
+		var rand = randi()
+		if rand % 10 == 0:
+			if rand % 7 == 0:
+				map[start.y][start.x] = "k"
+			if rand % 88 == 0:
+				map[start.y][start.x] = "B"
+	print("MONSTERS ADDED!")
