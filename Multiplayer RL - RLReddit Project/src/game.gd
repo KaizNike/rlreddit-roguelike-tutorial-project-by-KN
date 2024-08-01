@@ -4,6 +4,9 @@ extends Node
 ## 1. input not clear on different keyboards
 ## 2. Input on players mapped to framerate which is maxxed at 6, which is weird
 
+# Playtest Notes:
+## 1: You may fall off world
+
 var players = 0
 var controllers = []
 var ready_to_play = false
